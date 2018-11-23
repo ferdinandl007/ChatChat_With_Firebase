@@ -26,7 +26,7 @@ class ChannelListViewController: UITableViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        title = "RW"
+        title = "brooks"
         observeChannels()
     }
     deinit {
@@ -66,6 +66,7 @@ class ChannelListViewController: UITableViewController {
         if (indexPath as NSIndexPath).section == Section.createNewChannelSection.rawValue {
             if let createNewChannelCell = cell as? CreateChannelCell {
                 newChannelTextField = createNewChannelCell.newChannelNameField
+                createNewChannelCell.newChannelNameField.text = ""
             }
         } else if (indexPath as NSIndexPath).section == Section.currentChannelsSection.rawValue {
             cell.textLabel?.text = channels[(indexPath as NSIndexPath).row].name
@@ -107,7 +108,7 @@ class ChannelListViewController: UITableViewController {
             let channelData = snapshot.value as! Dictionary<String, AnyObject> // 2 The completion receives a FIRDataSnapshot (stored in snapshot), which contains the data and other helpful methods.
 
             let id = snapshot.key
-            if let name = channelData["name"] as! String!, name.characters.count > 0 { // 3 You pull the data out of the snapshot and, if successful, create a Channel model and add it to your channels array.
+            if let name = channelData["name"] as? String , name.count > 0 { // 3 You pull the data out of the snapshot and, if successful, create a Channel model and add it to your channels array.
                 self.channels.append(Channel(id: id, name: name))
                 self.tableView.reloadData()
             } else {
@@ -119,13 +120,15 @@ class ChannelListViewController: UITableViewController {
     // Make :Actione 
     
     @IBAction func createChannel(_ sender: AnyObject) {
-        if let name = newChannelTextField?.text { // 1 First check if you have a channel name in the text field.
-            let newChannelRef = channelRef.childByAutoId()// 2 Create a new channel reference with a unique key using childByAutoId()
-            let channelItem = [ //3 Create a dictionary to hold the data for this channel. A [String: AnyObject] works as a JSON-like object.
-                "name" : name
-            ]
-            newChannelRef.setValue(channelItem) // 4 Finally, set the name on this new channel, which is saved to Firebase automatically!
-    }
+         // 1 First check if you have a channel name in the text field.
+        guard let name = newChannelTextField?.text else { return }
+        
+    
+        let newChannelRef = channelRef.childByAutoId()// 2 Create a new channel reference with a unique key using childByAutoId()
+        let channelItem = [ //3 Create a dictionary to hold the data for this channel. A [String: AnyObject] works as a JSON-like object.
+            "name" : name
+        ]
+        newChannelRef.setValue(channelItem) // 4 Finally, set the name on this new channel, which is saved to Firebase automatically!
  }
 
 }

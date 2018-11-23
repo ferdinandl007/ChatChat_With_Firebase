@@ -137,15 +137,15 @@ final class ChatViewController: JSQMessagesViewController {
 
             let messageData = snapshot.value as! Dictionary<String, String>
             
-            if let id = messageData["senderId"] as String!, let name = messageData["senderName"] as String!, let text = messageData["text"] as String!, text.characters.count > 0 {
+            if let id = messageData["senderId"], let name = messageData["senderName"], let text = messageData["text"], text.count > 0 {
                 // 4 Call addMessage(withId:name:text) to add the new message to the data source
                 self.addMessage(withId: id, name: name, text: text)
                 
                 // 5
                 self.finishReceivingMessage()
                 
-            } else if let id = messageData["senderId"] as String!,
-                let photoURL = messageData["photoURL"] as String! { // 1
+            } else if let id = messageData["senderId"],
+                let photoURL = messageData["photoURL"] { // 1
                 // 2 If so, create a new JSQPhotoMediaItem. This object encapsulates rich media in messages — exactly what you need here!
 
                 if let mediaItem = JSQPhotoMediaItem(maskAsOutgoing: id == self.senderId) {
@@ -168,7 +168,7 @@ final class ChatViewController: JSQMessagesViewController {
             let key = snapshot.key
             let messageData = snapshot.value as! Dictionary<String, String> //1 Grabs the message data dictionary from the Firebase snapshot.
             
-            if let photoURL = messageData["photoURL"] as String! { // 2 Checks to see if the dictionary has a photoURL key set.
+            if let photoURL = messageData["photoURL"] { // 2 Checks to see if the dictionary has a photoURL key set.
                 //  The photo has been updated.
 
                 if let mediaItem = self.photoMessageMap[key] { // 3 Checks to see if the dictionary has a photoURL key set.
@@ -302,10 +302,10 @@ final class ChatViewController: JSQMessagesViewController {
     override func didPressAccessoryButton(_ sender: UIButton) {
         let picker = UIImagePickerController()
         picker.delegate = self
-        if (UIImagePickerController.isSourceTypeAvailable(UIImagePickerControllerSourceType.camera)) {
-            picker.sourceType = UIImagePickerControllerSourceType.camera
+        if (UIImagePickerController.isSourceTypeAvailable(UIImagePickerController.SourceType.camera)) {
+            picker.sourceType = UIImagePickerController.SourceType.camera
         } else {
-            picker.sourceType = UIImagePickerControllerSourceType.photoLibrary
+            picker.sourceType = UIImagePickerController.SourceType.photoLibrary
         }
         
         present(picker, animated: true, completion:nil)
@@ -315,12 +315,15 @@ final class ChatViewController: JSQMessagesViewController {
 // MARK: Image Picker Delegate
 extension ChatViewController: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     func imagePickerController(_ picker: UIImagePickerController,
-                               didFinishPickingMediaWithInfo info: [String : Any]) {
+                               didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
+// Local variable inserted by Swift 4.2 migrator.
+let info = convertFromUIImagePickerControllerInfoKeyDictionary(info)
+
         
         picker.dismiss(animated: true, completion:nil)
         
         // 1 First, check to see if a photo URL is present in the info dictionary. If so, you know you have a photo from the library.
-        if let photoReferenceUrl = info[UIImagePickerControllerReferenceURL] as? URL {
+        if let photoReferenceUrl = info[convertFromUIImagePickerControllerInfoKey(UIImagePickerController.InfoKey.phAsset)] as? URL {
             // Handle picking a Photo from the Photo Library
             // 2 Next, pull the PHAsset from the photo URL
             let assets = PHAsset.fetchAssets(withALAssetURLs: [photoReferenceUrl], options: nil)
@@ -335,7 +338,7 @@ extension ChatViewController: UIImagePickerControllerDelegate, UINavigationContr
                     
                     // 5 Create a unique path based on the user’s unique ID and the current time.
 
-                    let path = "\(Auth.auth().currentUser?.uid)/\(Int(Date.timeIntervalSinceReferenceDate * 1000))/\(photoReferenceUrl.lastPathComponent)"
+                    let path = "\(String(describing: Auth.auth().currentUser?.uid))/\(Int(Date.timeIntervalSinceReferenceDate * 1000))/\(photoReferenceUrl.lastPathComponent)"
                     
                     // 6 And (finally!) save the image file to Firebase Storage
                     self.stoerageRef.child(path).putFile(from: imageFileURL!, metadata: nil) { (metadata, error) in
@@ -352,11 +355,11 @@ extension ChatViewController: UIImagePickerControllerDelegate, UINavigationContr
             // Handle picking a Photo from the Camera - TODO
             // 1 First you grab the image from the info dictionary.
 
-            let image = info[UIImagePickerControllerOriginalImage] as! UIImage
+            let image = info[convertFromUIImagePickerControllerInfoKey(UIImagePickerController.InfoKey.originalImage)] as! UIImage
             // 2 Then call your sendPhotoMessage() method to save the fake image URL to Firebase.
             if let key = sendPhotoMessage() {
                 // 3  Next you get a JPEG representation of the photo, ready to be sent to Firebase storage.
-                let imageData = UIImageJPEGRepresentation(image, 1.0)
+                let imageData = image.jpegData(compressionQuality: 1.0)
                 // 4 As before, create a unique URL based on the user’s unique id and the current time.
 
                 let imagePath = Auth.auth().currentUser!.uid + "/\(Int(Date.timeIntervalSinceReferenceDate * 1000)).jpg"
@@ -384,3 +387,13 @@ extension ChatViewController: UIImagePickerControllerDelegate, UINavigationContr
     }
 }
 
+
+// Helper function inserted by Swift 4.2 migrator.
+fileprivate func convertFromUIImagePickerControllerInfoKeyDictionary(_ input: [UIImagePickerController.InfoKey: Any]) -> [String: Any] {
+	return Dictionary(uniqueKeysWithValues: input.map {key, value in (key.rawValue, value)})
+}
+
+// Helper function inserted by Swift 4.2 migrator.
+fileprivate func convertFromUIImagePickerControllerInfoKey(_ input: UIImagePickerController.InfoKey) -> String {
+	return input.rawValue
+}
