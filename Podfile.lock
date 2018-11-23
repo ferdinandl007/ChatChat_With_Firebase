@@ -1,0 +1,72 @@
+PODS:
+  - Firebase/Auth (5.13.0):
+    - Firebase/CoreOnly
+    - FirebaseAuth (= 5.0.5)
+  - Firebase/CoreOnly (5.13.0):
+    - FirebaseCore (= 5.1.8)
+  - Firebase/Database (5.13.0):
+    - Firebase/CoreOnly
+    - FirebaseDatabase (= 5.0.3)
+  - Firebase/Storage (5.13.0):
+    - Firebase/CoreOnly
+    - FirebaseStorage (= 3.0.3)
+  - FirebaseAuth (5.0.5):
+    - FirebaseAuthInterop (~> 1.0)
+    - FirebaseCore (~> 5.1)
+    - GoogleUtilities/Environment (~> 5.2)
+    - GTMSessionFetcher/Core (~> 1.1)
+  - FirebaseAuthInterop (1.0.0)
+  - FirebaseCore (5.1.8):
+    - GoogleUtilities/Logger (~> 5.2)
+  - FirebaseDatabase (5.0.3):
+    - FirebaseCore (~> 5.0)
+    - leveldb-library (~> 1.18)
+  - FirebaseStorage (3.0.3):
+    - FirebaseAuthInterop (~> 1.0)
+    - FirebaseCore (~> 5.1)
+    - GTMSessionFetcher/Core (~> 1.1)
+  - GoogleUtilities/Environment (5.3.6)
+  - GoogleUtilities/Logger (5.3.6):
+    - GoogleUtilities/Environment
+  - GTMSessionFetcher/Core (1.2.1)
+  - JSQMessagesViewController (7.3.5):
+    - JSQSystemSoundPlayer (~> 2.0.1)
+  - JSQSystemSoundPlayer (2.0.1)
+  - leveldb-library (1.20)
+
+DEPENDENCIES:
+  - Firebase/Auth
+  - Firebase/Database
+  - Firebase/Storage
+  - JSQMessagesViewController
+
+SPEC REPOS:
+  https://github.com/CocoaPods/Specs.git:
+    - Firebase
+    - FirebaseAuth
+    - FirebaseAuthInterop
+    - FirebaseCore
+    - FirebaseDatabase
+    - FirebaseStorage
+    - GoogleUtilities
+    - GTMSessionFetcher
+    - JSQMessagesViewController
+    - JSQSystemSoundPlayer
+    - leveldb-library
+
+SPEC CHECKSUMS:
+  Firebase: 6df9a6114bc9f106a98fe83d5438d4d9833c2019
+  FirebaseAuth: 9299ab178271bec7426967b05b2718bb6fc31f17
+  FirebaseAuthInterop: 0ffa57668be100582bb7643d4fcb7615496c41fc
+  FirebaseCore: fba2bfaa691c49028309b92e4dd37cc4b5512fbe
+  FirebaseDatabase: e2bcbc106adc4b11a2da3ec2eb63c0c4a44f2f54
+  FirebaseStorage: 3d22c041370593e639fba013d1eb698a8dae2881
+  GoogleUtilities: 95996bea7c7d9b8fb811b7507669a4a8762f80c7
+  GTMSessionFetcher: 32aeca0aa144acea523e1c8e053089dec2cb98ca
+  JSQMessagesViewController: 6587f56aedbcb150a8ba1d968e1ef58b1bc758b7
+  JSQSystemSoundPlayer: c5850e77a4363ffd374cd851154b9af93264ed8d
+  leveldb-library: 08cba283675b7ed2d99629a4bc5fd052cd2bb6a5
+
+PODFILE CHECKSUM: 83eb893478d31a817490b9ffb8202c3bd49d3ebc
+
+COCOAPODS: 1.5.0
